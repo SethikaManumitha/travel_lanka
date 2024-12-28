@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_lanka/widget/CustomDrawer.dart';
+import 'package:travel_lanka/widget/PlaceCard.dart';
 
 class AddPlacePage extends StatefulWidget {
   @override
@@ -11,60 +12,51 @@ class _AddPlacePageState extends State<AddPlacePage> {
   final TextEditingController placeController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
-  final TextEditingController tagController = TextEditingController();
 
   final CollectionReference places = FirebaseFirestore.instance.collection('places');
+  String selectedCategory = 'Restaurant'; // Default category
+  String? updatingDocId;
 
-  // Add place
-  Future<void> addPlace(String place, String description, String image, String tag) async {
+  Future<void> addOrUpdatePlace(String place, String description, String image, String category) async {
     try {
-      await places.add({
-        'place': place,
-        'descript': description,
-        'image': image,
-        'tag': tag,
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Place added successfully!')),
-      );
+      if (updatingDocId == null) {
+        // Add a new place
+        await places.add({
+          'place': place,
+          'descript': description,
+          'image': image,
+          'category': category,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Place added successfully!')),
+        );
+      } else {
+        // Update an existing place
+        await places.doc(updatingDocId).update({
+          'place': place,
+          'descript': description,
+          'image': image,
+          'category': category,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Place updated successfully!')),
+        );
+        updatingDocId = null; // Reset the update mode
+      }
+      clearForm();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add place: $e')),
+        SnackBar(content: Text('Failed to save place: $e')),
       );
     }
   }
 
-  // Update place
-  Future<void> updatePlace(String docId, String newPlace, String newDescription, String newImage, String newTag) async {
-    try {
-      await places.doc(docId).update({
-        'place': newPlace,
-        'descript': newDescription,
-        'image': newImage,
-        'tag': newTag,
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Place updated successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update place: $e')),
-      );
-    }
-  }
-
-  // Delete place
-  Future<void> deletePlace(String docId) async {
-    try {
-      await places.doc(docId).delete();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Place deleted successfully!')),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to delete place: $e')),
-      );
-    }
+  void clearForm() {
+    placeController.clear();
+    descriptionController.clear();
+    imageController.clear();
+    selectedCategory = 'Restaurant';
+    updatingDocId = null;
   }
 
   @override
@@ -72,175 +64,108 @@ class _AddPlacePageState extends State<AddPlacePage> {
     placeController.dispose();
     descriptionController.dispose();
     imageController.dispose();
-    tagController.dispose();
     super.dispose();
   }
 
-  void showAddPlaceDialog() {
+  void showAddPlaceDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Place'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: placeController,
-                decoration: const InputDecoration(
-                  labelText: 'Place',
-                  border: OutlineInputBorder(),
-                ),
+      builder: (context) {
+        return AlertDialog(
+          title: Text(updatingDocId == null ? 'Add Place' : 'Update Place'),
+          contentPadding: const EdgeInsets.all(16.0),  // Optional: To add space around the content
+          content: Container(
+            width: 600,
+            height: 270, // Increase the height of the dialog box
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: placeController,
+                    decoration: const InputDecoration(
+                      labelText: 'Place',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: imageController,
+                    decoration: const InputDecoration(
+                      labelText: 'Image URL',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    value: selectedCategory,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedCategory = value!;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Category',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: [
+                      'Restaurant',
+                      'Hotel',
+                      'LandMark',
+                      'Beach',
+                      'Park',
+                      'Museum',
+                    ].map((category) {
+                      return DropdownMenuItem(
+                        value: category,
+                        child: Text(category),
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: imageController,
-                decoration: const InputDecoration(
-                  labelText: 'Image URL',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: tagController,
-                decoration: const InputDecoration(
-                  labelText: 'Tag (e.g., #Beach)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (placeController.text.trim().isEmpty ||
-                  descriptionController.text.trim().isEmpty ||
-                  imageController.text.trim().isEmpty ||
-                  tagController.text.trim().isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('All fields are required')),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (placeController.text.trim().isEmpty ||
+                    descriptionController.text.trim().isEmpty ||
+                    imageController.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('All fields are required')),
+                  );
+                  return;
+                }
+                addOrUpdatePlace(
+                  placeController.text.trim(),
+                  descriptionController.text.trim(),
+                  imageController.text.trim(),
+                  selectedCategory,
                 );
-                return;
-              }
-              addPlace(
-                placeController.text.trim(),
-                descriptionController.text.trim(),
-                imageController.text.trim(),
-                tagController.text.trim(),
-              );
-              placeController.clear();
-              descriptionController.clear();
-              imageController.clear();
-              tagController.clear();
-              Navigator.pop(context);
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
+                Navigator.of(context).pop(); // Close the dialog after saving
+              },
+              child: Text(updatingDocId == null ? 'Add Place' : 'Update Place'),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  void showUpdatePlaceDialog(String docId, String currentPlace, String currentDescription, String currentImage, String currentTag) {
-    placeController.text = currentPlace;
-    descriptionController.text = currentDescription;
-    imageController.text = currentImage;
-    tagController.text = currentTag;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Update Place'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: placeController,
-                decoration: const InputDecoration(
-                  labelText: 'Place',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: imageController,
-                decoration: const InputDecoration(
-                  labelText: 'Image URL',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: tagController,
-                decoration: const InputDecoration(
-                  labelText: 'Tag (e.g., #Beach)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (placeController.text.trim().isEmpty ||
-                  descriptionController.text.trim().isEmpty ||
-                  imageController.text.trim().isEmpty ||
-                  tagController.text.trim().isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('All fields are required')),
-                );
-                return;
-              }
-              updatePlace(
-                docId,
-                placeController.text.trim(),
-                descriptionController.text.trim(),
-                imageController.text.trim(),
-                tagController.text.trim(),
-              );
-              placeController.clear();
-              descriptionController.clear();
-              imageController.clear();
-              tagController.clear();
-              Navigator.pop(context);
-            },
-            child: const Text('Update'),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -254,12 +179,16 @@ class _AddPlacePageState extends State<AddPlacePage> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              StreamBuilder(
                 stream: places.snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -277,46 +206,71 @@ class _AddPlacePageState extends State<AddPlacePage> {
                     return const Center(child: Text('No places found.'));
                   }
                   return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: data.length,
                     itemBuilder: (context, index) {
                       final doc = data[index];
                       final place = doc['place'];
                       final description = doc['descript'];
                       final image = doc['image'];
-                      final tag = doc['tag'];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: ListTile(
-                          title: Text(place),
-                          subtitle: Text('$description\nTag: $tag'),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () => showUpdatePlaceDialog(doc.id, place, description, image, tag),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => deletePlace(doc.id),
-                              ),
-                            ],
-                          ),
-                        ),
+                      final category = doc['category'];
+
+                      // Use the PlaceCard widget instead of ListTile
+                      return PlaceCard(
+                        place: place,
+                        description: description,
+                        image: image,
+                        category: category,
+                        rating: 4.5,
+                        isFavorite: false,
+                        onFavoriteToggle: () {
+                          // Implement favorite toggle functionality here
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Favorite toggled!')),
+                          );
+                        },
+                        onEdit: () {
+                          setState(() {
+                            updatingDocId = doc.id;
+                            placeController.text = place;
+                            descriptionController.text = description;
+                            imageController.text = image;
+                            selectedCategory = category;
+                          });
+                          showAddPlaceDialog(context);
+                        },
+                        onDelete: () => deletePlace(doc.id),
                       );
                     },
                   );
                 },
               ),
-            ),
-          ],
+
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: showAddPlaceDialog,
-        backgroundColor: Colors.red,
+        onPressed: () {
+          showAddPlaceDialog(context); // Show dialog when FAB is pressed
+        },
         child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: Colors.red,
       ),
     );
+  }
+
+  Future<void> deletePlace(String docId) async {
+    try {
+      await places.doc(docId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Place deleted successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete place: $e')),
+      );
+    }
   }
 }

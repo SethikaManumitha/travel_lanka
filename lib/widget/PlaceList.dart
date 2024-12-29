@@ -20,8 +20,8 @@ class PlaceList extends StatefulWidget {
     required this.rating,
     required this.isFavorite,
     required this.onFavoriteToggle,
-    required this.onAdd, // Add callback passed here
-    required this.isAdded, // Pass the isAdded state to manage icon toggling
+    required this.onAdd,
+    required this.isAdded,
   }) : super(key: key);
 
   @override
@@ -88,7 +88,7 @@ class _PlaceListState extends State<PlaceList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       widget.place,
@@ -97,7 +97,6 @@ class _PlaceListState extends State<PlaceList> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 70),
                     Row(
                       children: List.generate(5, (index) {
                         return Icon(
@@ -111,12 +110,13 @@ class _PlaceListState extends State<PlaceList> {
                     ),
                   ],
                 ),
-
+                Text(
+                  widget.description,
+                ),
               ],
             ),
           ),
 
-          // Bottom Section with Heart and Add/Cancel
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -124,7 +124,7 @@ class _PlaceListState extends State<PlaceList> {
                 icon: Icon(
                   widget.isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: Colors.red,
-                  size: 40,
+                  size: 35,
                 ),
                 onPressed: widget.onFavoriteToggle,
               ),
@@ -134,7 +134,7 @@ class _PlaceListState extends State<PlaceList> {
                     icon: Icon(
                       isAdded ? Icons.cancel : Icons.add_circle_outline_rounded,
                       color: isAdded ? Colors.red : Colors.green, // Red for cancel, Green for tick
-                      size: 40,
+                      size: 35,
                     ),
                     onPressed: () {
                       setState(() {

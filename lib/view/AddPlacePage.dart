@@ -81,8 +81,9 @@ class _AddPlacePageState extends State<AddPlacePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.docId == null ? 'Add Place' : 'Update Place'),
+        title: Text(widget.docId == null ? 'Add Place' : 'Update Place',style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.red,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -174,7 +175,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: savePlace,
-              child: Text(widget.docId == null ? 'Add Place' : 'Update Place'),
+              child: Text(widget.docId == null ? 'Add Place' : 'Update Place',style: TextStyle(color: Colors.white),),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),

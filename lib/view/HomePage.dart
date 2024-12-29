@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel_lanka/widget/PlaceCard.dart';
+import 'package:travel_lanka/widget/PlaceList.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,6 +55,23 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = null;
+                      });
+                    },
+                    label: const Text("All"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == null ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == null ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
                   ElevatedButton.icon(
                     onPressed: () {
                       setState(() {
@@ -162,24 +179,7 @@ class _HomePageState extends State<HomePage> {
                       foregroundColor: _selectedCategory == "Gas Station" ? Colors.white : Colors.black,
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        _selectedCategory = null;
-                      });
-                    },
-                    icon: const Icon(Icons.clear),
-                    label: const Text("Clear"),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      backgroundColor: _selectedCategory == null ? Colors.red : Colors.grey[300],
-                      foregroundColor: _selectedCategory == null ? Colors.white : Colors.black,
-                    ),
-                  ),
+
                 ],
               ),
             ),
@@ -212,8 +212,8 @@ class _HomePageState extends State<HomePage> {
                     final description = doc['descript'];
                     final image = doc['image'];
                     final category = doc['category'];
-
-                    return PlaceCard(
+                    bool isAdded = false;
+                    return PlaceList(
                       place: place,
                       description: description,
                       image: image,
@@ -225,8 +225,10 @@ class _HomePageState extends State<HomePage> {
                           const SnackBar(content: Text('Favorite toggled!')),
                         );
                       },
-                      onEdit: () {},
-                      onDelete: () {},
+                      onAdd: () {
+                        isAdded = !isAdded;
+                      },
+                      isAdded: isAdded,
                     );
                   },
                 );

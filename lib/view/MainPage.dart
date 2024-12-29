@@ -3,27 +3,12 @@ import 'package:travel_lanka/view/HomePage.dart';
 import 'package:travel_lanka/view/ViewTripPage.dart';
 import 'package:travel_lanka/view/ViewPlacePage.dart';
 import 'package:travel_lanka/widget/CustomDrawer.dart';
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bottom Navigation Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-      ),
-      home: const MainPage(),
-    );
-  }
-}
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final String email; // Added parameter for email
+  final String username; // Added parameter for username
+
+  const MainPage({Key? key, required this.email, required this.username}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -32,19 +17,25 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
 
-  // List of pages for each BottomNavigationBar item
-  final List<Widget> _pages = [
-    const HomePage(),
-    const FavoritesScreen(),
-    const ViewTripPage(),
-    ViewPlacePage(),
-  ];
+  final List<Widget> _pages = [];
 
   // Function to navigate and update the index
   void _onNavigate(int index) {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pages.addAll([
+      const HomePage(),
+      const FavoritesScreen(),
+      const ViewTripPage(),
+      ViewPlacePage(email: widget.email), // Pass the email parameter here
+    ]);
   }
 
   @override
@@ -60,12 +51,18 @@ class _MainPageState extends State<MainPage> {
       ),
       drawer: CustomDrawer(
         onNavigate: _onNavigate,
-        currentIndex: _currentIndex, // Pass the current index
+        currentIndex: _currentIndex,
+        userName: widget.username,
+        email: widget.email, // Pass the email to the CustomDrawer
       ),
-      body: _pages[_currentIndex], // Display the current page
+      body: Column(
+        children: [
+          Expanded(child: _pages[_currentIndex]), // Display the current page
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: _onNavigate, // Use the same navigation function
+        onTap: _onNavigate,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -93,7 +90,6 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({Key? key}) : super(key: key);
 
@@ -101,17 +97,6 @@ class FavoritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text('Favorites Screen', style: TextStyle(fontSize: 24)),
-    );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Profile Screen', style: TextStyle(fontSize: 24)),
     );
   }
 }

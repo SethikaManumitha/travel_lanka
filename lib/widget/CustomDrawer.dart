@@ -6,11 +6,15 @@ import 'package:travel_lanka/view/SignInPage.dart';
 class CustomDrawer extends StatelessWidget {
   final Function(int) onNavigate;
   final int currentIndex;
+  final String userName;
+  final String email;
 
   const CustomDrawer({
     Key? key,
     required this.onNavigate,
     required this.currentIndex,
+    required this.userName,
+    required this.email,
   }) : super(key: key);
 
   Future<void> logout(BuildContext context) async {
@@ -29,27 +33,27 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const UserAccountsDrawerHeader(
+          UserAccountsDrawerHeader(
             accountName: Text(
-              'User Name',
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              userName,
+              style: const TextStyle(fontSize: 18, color: Colors.white),
             ),
             accountEmail: Text(
-              'user@example.com',
-              style: TextStyle(fontSize: 14, color: Colors.white70),
+              email,
+              style: const TextStyle(fontSize: 14, color: Colors.white70),
             ),
-            currentAccountPicture: CircleAvatar(
+            currentAccountPicture: const CircleAvatar(
               backgroundImage: NetworkImage('https://placehold.co/600x400'),
             ),
-            decoration: BoxDecoration(color: Colors.red),
+            decoration: const BoxDecoration(color: Colors.red),
           ),
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
-            selected: currentIndex == 0, // Highlight the current item
+            selected: currentIndex == 0,
             onTap: () {
               Navigator.pop(context);
-              onNavigate(0); // Set index for BottomNavigationBar
+              onNavigate(0);
             },
           ),
           ListTile(
@@ -79,17 +83,14 @@ class CustomDrawer extends StatelessWidget {
               onNavigate(3);
             },
           ),
-          // Adding About and Currency Converter options here
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('About'),
             onTap: () {
-              Navigator.pop(context); // Close drawer before navigating
+              Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const AboutPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const AboutPage()),
               );
             },
           ),
@@ -97,12 +98,10 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.currency_exchange),
             title: const Text('Currency Converter'),
             onTap: () {
-              Navigator.pop(context); // Close drawer before navigating
+              Navigator.pop(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const CurrencyConverterPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const CurrencyConverterPage()),
               );
             },
           ),
@@ -111,7 +110,7 @@ class CustomDrawer extends StatelessWidget {
             title: const Text('Logout'),
             onTap: () {
               Navigator.pop(context);
-              logout(context); // Logout
+              logout(context);
             },
           ),
         ],
@@ -119,3 +118,4 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 }
+

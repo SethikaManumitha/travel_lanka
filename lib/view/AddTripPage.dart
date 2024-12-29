@@ -155,7 +155,7 @@ class _AddTripPageState extends State<AddTripPage> {
                           final description = doc['descript'];
                           final image = doc['image'];
                           final category = doc['category'];
-                          bool isAdded = false;  // Example, determine if the place is added
+                          bool isAdded = false;
 
                           return PlaceList(
                             place: place,

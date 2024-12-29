@@ -4,8 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AddPlacePage extends StatefulWidget {
   final String? docId;
   final Map<String, dynamic>? initialData;
+  final String email;  // Add email parameter
 
-  AddPlacePage({this.docId, this.initialData});
+  AddPlacePage({this.docId, this.initialData, required this.email});
 
   @override
   _AddPlacePageState createState() => _AddPlacePageState();
@@ -16,8 +17,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
-  final CollectionReference places =
-  FirebaseFirestore.instance.collection('places');
+  final CollectionReference places = FirebaseFirestore.instance.collection('places');
 
   String selectedCategory = 'Restaurant';
   String selectedDistrict = 'Colombo';
@@ -46,6 +46,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
           'category': selectedCategory,
           'location': locationController.text.trim(),
           'district': selectedDistrict,
+          'user': widget.email, // Saving the email as part of the place entry
         });
       } else {
         await places.doc(widget.docId).update({
@@ -55,6 +56,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
           'category': selectedCategory,
           'location': locationController.text.trim(),
           'district': selectedDistrict,
+          'user': widget.email,
         });
       }
       Navigator.of(context).pop();
@@ -81,7 +83,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.docId == null ? 'Add Place' : 'Update Place',style: TextStyle(color: Colors.white),),
+        title: Text(widget.docId == null ? 'Add Place' : 'Update Place',style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -175,7 +177,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: savePlace,
-              child: Text(widget.docId == null ? 'Add Place' : 'Update Place',style: TextStyle(color: Colors.white),),
+              child: Text(widget.docId == null ? 'Add Place' : 'Update Place', style: TextStyle(color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
@@ -186,3 +188,4 @@ class _AddPlacePageState extends State<AddPlacePage> {
     );
   }
 }
+

@@ -16,13 +16,12 @@ class _SignPageState extends State<SignPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Sign In Button - Red Color and Rectangular Shape
             Container(
-              width: 250, // Adjust the width to your preference
+              width: 250,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Rectangular button
                   ),
                 ),
@@ -38,18 +37,18 @@ class _SignPageState extends State<SignPage> {
                 ),
               ),
             ),
-            SizedBox(height: 20), // Space between the buttons
-            // Sign Up Button - Rectangular Shape
+            SizedBox(height: 20),
+
             Container(
-              width: 250, // Adjust the width to your preference
+              width: 250,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero, // Rectangular button
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
                   ),
                 ),
                 onPressed: () {
-                  // Navigate to the SignUpPage when Sign Up button is pressed
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const SignUpPage()),

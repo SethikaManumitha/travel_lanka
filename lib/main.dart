@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Travel Lanka',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: MainPage(),
+      home: SignPage(),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel_lanka/view/HomePage.dart';
+import 'package:travel_lanka/view/MainPage.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -31,16 +31,15 @@ class _SignInPageState extends State<SignInPage> {
       // Check if the password matches the one stored for that email
       var userData = userQuery.docs.first.data() as Map<String, dynamic>;
       if (userData['password'] == password) {
-        // Navigate to the HomePage if credentials are correct
+        // Navigate to the MainPage with email and password
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Incorrect password')),
+          MaterialPageRoute(
+            builder: (context) => MainPage(email: email, username: userData['username']),
+          ),
         );
       }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),

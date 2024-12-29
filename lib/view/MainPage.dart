@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_lanka/view/HomePage.dart';
-import 'package:travel_lanka/view/AddTripPage.dart';
+import 'package:travel_lanka/view/ViewTripPage.dart';
 import 'package:travel_lanka/view/ViewPlacePage.dart';
 import 'package:travel_lanka/widget/CustomDrawer.dart';
 void main() {
@@ -36,7 +36,7 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [
     const HomePage(),
     const FavoritesScreen(),
-    const AddTripPage(),
+    const ViewTripPage(),
     ViewPlacePage(),
   ];
 
@@ -59,7 +59,7 @@ class _MainPageState extends State<MainPage> {
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: CustomDrawer(
-        onNavigate: _onNavigate, // Pass the navigation function
+        onNavigate: _onNavigate,
         currentIndex: _currentIndex, // Pass the current index
       ),
       body: _pages[_currentIndex], // Display the current page

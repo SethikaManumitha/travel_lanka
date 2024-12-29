@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:travel_lanka/widget/CustomDrawer.dart';
+
 class AboutPage extends StatelessWidget {
   const AboutPage({Key? key}) : super(key: key);
 
@@ -7,11 +7,10 @@ class AboutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About Travel Lanka',style: TextStyle(color: Colors.white),),
+        title: const Text('About Travel Lanka', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.red,
-          iconTheme: const IconThemeData(color: Colors.white)
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
-      drawer: CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -38,8 +37,6 @@ class AboutPage extends StatelessWidget {
             _buildFeatureItem('Save your favorite places'),
             _buildFeatureItem('Offline access to your data'),
             _buildFeatureItem('Rate and review places'),
-            const SizedBox(height: 24),
-            // Removed the currency converter in the about page because of overflowing
           ],
         ),
       ),
@@ -59,4 +56,3 @@ class AboutPage extends StatelessWidget {
     );
   }
 }
-

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddTripPage extends StatefulWidget {
-  const AddTripPage({super.key});
+class AddTripPage extends StatelessWidget {
+  const AddTripPage({Key? key}) : super(key: key);
 
-  @override
-  State<AddTripPage> createState() => _AddTripPageState();
-}
-
-class _AddTripPageState extends State<AddTripPage> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: const Center(
+        child: Text(
+          'Add your trip details here.',
+          style: TextStyle(fontSize: 18),
+        ),
+
+      ),
+
+    );
   }
 }

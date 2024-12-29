@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel_lanka/widget/CustomDrawer.dart';
 import 'package:travel_lanka/widget/PlaceCard.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,7 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 0;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String? _searchQuery;
   String? _selectedCategory;
@@ -19,18 +18,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Travel Lanka',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.red,
-        iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(icon: Icon(Icons.favorite_border), onPressed: () {}),
-        ],
-      ),
-      drawer: CustomDrawer(),
+
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -248,35 +236,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: "Favorites",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: "Plan",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
-        ],
-        selectedItemColor: Colors.red,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-      ),
+
     );
   }
 

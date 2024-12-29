@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel_lanka/view/MainPage.dart';
+import 'package:travel_lanka/view/SignPage.dart';
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -30,7 +30,7 @@ class _SignUpPageState extends State<SignUpPage> {
       
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MainPage()),
+        MaterialPageRoute(builder: (context) => const SignPage()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

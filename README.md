@@ -1,13 +1,15 @@
 # 🌴 **Travel Lanka App**
 
-**Travel Lanka** is your ultimate travel companion for exploring Sri Lanka! Whether you’re a local adventurer or a curious traveler, Travel Lanka helps you plan trips effortlessly, discover hidden gems, and explore exciting destinations.
+**Travel Lanka** is your ultimate companion for exploring the beautiful island of Sri Lanka. Discover amazing places, plan your trips, and create unforgettable memories.
 
 ---
 
 ## ✨ **Key Features**
-- 🗺️ **Seamless Trip Planning**: Create and customize your travel plans.
-- 📍 **Explore New Destinations**: Discover must-visit locations and hidden gems across Sri Lanka.
-- 📱 **User-Friendly Design**: Navigate the app easily with an intuitive interface.
+- 🗺️ **Explore places in Sri Lanka**: Discover must-visit locations and hidden gems across the island.
+- 📝 **Plan and manage your trips**: Easily organize your travel itinerary.
+- ❤️ **Save your favorite places**: Bookmark locations to revisit them later.
+- 📶 **Offline access to your data**: Access your plans and saved spots even without internet.
+- ⭐ **Rate and review places**: Share your experience and help other travelers.
 
 ---
 

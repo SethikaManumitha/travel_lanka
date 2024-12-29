@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Travel Lanka',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: MainPage(),
+      home: HomePage(),
     );
   }
 }

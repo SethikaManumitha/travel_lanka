@@ -12,12 +12,14 @@ class _AddPlacePageState extends State<AddPlacePage> {
   final TextEditingController placeController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController imageController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
 
   final CollectionReference places = FirebaseFirestore.instance.collection('places');
-  String selectedCategory = 'Restaurant'; // Default category
+  String selectedCategory = 'Restaurant';
+  String selectedDistrict = 'Colombo';
   String? updatingDocId;
 
-  Future<void> addOrUpdatePlace(String place, String description, String image, String category) async {
+  Future<void> addOrUpdatePlace(String place, String description, String image, String category, String location, String district) async {
     try {
       if (updatingDocId == null) {
         // Add a new place
@@ -26,6 +28,8 @@ class _AddPlacePageState extends State<AddPlacePage> {
           'descript': description,
           'image': image,
           'category': category,
+          'location': location,
+          'district': district,
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Place added successfully!')),
@@ -37,6 +41,8 @@ class _AddPlacePageState extends State<AddPlacePage> {
           'descript': description,
           'image': image,
           'category': category,
+          'location': location,
+          'district': district,
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Place updated successfully!')),
@@ -51,13 +57,17 @@ class _AddPlacePageState extends State<AddPlacePage> {
     }
   }
 
+
   void clearForm() {
     placeController.clear();
     descriptionController.clear();
     imageController.clear();
+    locationController.clear();
     selectedCategory = 'Restaurant';
+    selectedDistrict = 'Colombo';
     updatingDocId = null;
   }
+
 
   @override
   void dispose() {
@@ -76,7 +86,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
           contentPadding: const EdgeInsets.all(16.0),  // Optional: To add space around the content
           content: Container(
             width: 600,
-            height: 270, // Increase the height of the dialog box
+            height: 400, // Increase the height of the dialog box
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -96,14 +106,8 @@ class _AddPlacePageState extends State<AddPlacePage> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  TextField(
-                    controller: imageController,
-                    decoration: const InputDecoration(
-                      labelText: 'Image URL',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
+
+
                   DropdownButtonFormField<String>(
                     value: selectedCategory,
                     onChanged: (value) {
@@ -117,17 +121,60 @@ class _AddPlacePageState extends State<AddPlacePage> {
                     ),
                     items: [
                       'Restaurant',
-                      'Hotel',
                       'LandMark',
-                      'Beach',
+                      'Hotel',
                       'Park',
-                      'Museum',
+                      'ATM',
+                      'Gas Station',
                     ].map((category) {
                       return DropdownMenuItem(
                         value: category,
                         child: Text(category),
                       );
                     }).toList(),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: locationController,
+                    decoration: const InputDecoration(
+                      labelText: 'Location',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    value: selectedDistrict,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedDistrict = value!;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'District',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: [
+                      'Colombo',
+                      'Gampaha',
+                      'Kandy',
+                      'Galle',
+                      'Matara',
+                      'Jaffna',
+                      // Add more districts as required
+                    ].map((district) {
+                      return DropdownMenuItem(
+                        value: district,
+                        child: Text(district),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: imageController,
+                    decoration: const InputDecoration(
+                      labelText: 'Image URL',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ],
               ),
@@ -144,7 +191,8 @@ class _AddPlacePageState extends State<AddPlacePage> {
               onPressed: () {
                 if (placeController.text.trim().isEmpty ||
                     descriptionController.text.trim().isEmpty ||
-                    imageController.text.trim().isEmpty) {
+                    imageController.text.trim().isEmpty ||
+                    locationController.text.trim().isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('All fields are required')),
                   );
@@ -155,9 +203,12 @@ class _AddPlacePageState extends State<AddPlacePage> {
                   descriptionController.text.trim(),
                   imageController.text.trim(),
                   selectedCategory,
+                  locationController.text.trim(),
+                  selectedDistrict,
                 );
                 Navigator.of(context).pop(); // Close the dialog after saving
               },
+
               child: Text(updatingDocId == null ? 'Add Place' : 'Update Place'),
             ),
           ],
@@ -215,8 +266,10 @@ class _AddPlacePageState extends State<AddPlacePage> {
                       final description = doc['descript'];
                       final image = doc['image'];
                       final category = doc['category'];
+                      final location = doc['location'];
+                      final district = doc['district'];
 
-                      // Use the PlaceCard widget instead of ListTile
+                    // Pass these to your widget if applicable
                       return PlaceCard(
                         place: place,
                         description: description,
@@ -225,7 +278,6 @@ class _AddPlacePageState extends State<AddPlacePage> {
                         rating: 4.5,
                         isFavorite: false,
                         onFavoriteToggle: () {
-                          // Implement favorite toggle functionality here
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Favorite toggled!')),
                           );
@@ -236,12 +288,15 @@ class _AddPlacePageState extends State<AddPlacePage> {
                             placeController.text = place;
                             descriptionController.text = description;
                             imageController.text = image;
+                            locationController.text = location;
                             selectedCategory = category;
+                            selectedDistrict = district;
                           });
                           showAddPlaceDialog(context);
                         },
                         onDelete: () => deletePlace(doc.id),
                       );
+
                     },
                   );
                 },

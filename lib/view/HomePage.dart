@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_lanka/widget/CustomDrawer.dart';
+import 'package:travel_lanka/widget/PlaceCard.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -8,6 +11,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String? _searchQuery;
+  String? _selectedCategory;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,12 +42,17 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: "Search...",
+                      hintText: "Search by district...",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       prefixIcon: Icon(Icons.search),
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value.trim();
+                      });
+                    },
                   ),
                 ),
               ],
@@ -52,75 +65,231 @@ class _HomePageState extends State<HomePage> {
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
-                children: List.generate(
-                  5,
-                      (index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: Colors.grey[300],
-                      child: Text("Cat"),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = "Hotel";
+                      });
+                    },
+                    icon: const Icon(Icons.bed),
+                    label: const Text("Hotel"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == "Hotel" ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == "Hotel" ? Colors.white : Colors.black,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = "LandMark";
+                      });
+                    },
+                    icon: const Icon(Icons.location_on),
+                    label: const Text("LandMark"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == "LandMark" ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == "LandMark" ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = "Restaurant";
+                      });
+                    },
+                    icon: const Icon(Icons.restaurant),
+                    label: const Text("Restaurant"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == "Restaurant" ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == "Restaurant" ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = "Park";
+                      });
+                    },
+                    icon: const Icon(Icons.park),
+                    label: const Text("Park"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == "Park" ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == "Park" ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = "ATM";
+                      });
+                    },
+                    icon: const Icon(Icons.attach_money),
+                    label: const Text("ATM"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == "ATM" ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == "ATM" ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = "Gas Station";
+                      });
+                    },
+                    icon: const Icon(Icons.local_gas_station),
+                    label: const Text("Gas Station"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == "Gas Station" ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == "Gas Station" ? Colors.white : Colors.black,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _selectedCategory = null;
+                      });
+                    },
+                    icon: const Icon(Icons.clear),
+                    label: const Text("Clear"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      backgroundColor: _selectedCategory == null ? Colors.red : Colors.grey[300],
+                      foregroundColor: _selectedCategory == null ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
+
             SizedBox(height: 20),
 
-            // Most Recommended
+            // Most Recommended Places
             Text("Most Recommended", style: TextStyle(fontSize: 18)),
             SizedBox(height: 10),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                  3,
-                      (index) => Container(
-                    width: 150,
-                    height: 100,
-                    margin: EdgeInsets.only(right: 10),
-                    color: Colors.grey[300],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
+            StreamBuilder<QuerySnapshot>(
+              stream: _getFilteredPlaces(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(child: Text('Error loading data.'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final places = snapshot.data!.docs;
+                if (places.isEmpty) {
+                  return const Center(child: Text('No places found.'));
+                }
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: places.length,
+                  itemBuilder: (context, index) {
+                    final doc = places[index];
+                    final place = doc['place'];
+                    final description = doc['descript'];
+                    final image = doc['image'];
+                    final category = doc['category'];
 
-            // Create Your Plan
-            Text("Create Your Plan...", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 10),
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Center(
-                child: Icon(Icons.add, size: 50),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Top Restaurants
-            Text("Top Restaurants", style: TextStyle(fontSize: 18)),
-            SizedBox(height: 10),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                  3,
-                      (index) => Container(
-                    width: 150,
-                    height: 100,
-                    margin: EdgeInsets.only(right: 10),
-                    color: Colors.grey[300],
-                  ),
-                ),
-              ),
+                    return PlaceCard(
+                      place: place,
+                      description: description,
+                      image: image,
+                      category: category,
+                      rating: 4.5,
+                      isFavorite: false,
+                      onFavoriteToggle: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Favorite toggled!')),
+                        );
+                      },
+                      onEdit: () {},
+                      onDelete: () {},
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),
       ),
+
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: "Favorites",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: "Plan",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profile",
+          ),
+        ],
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
+      ),
     );
   }
+
+  // Filter firestore results
+  Stream<QuerySnapshot> _getFilteredPlaces() {
+    Query query = _firestore.collection('places');
+    if (_searchQuery != null && _searchQuery!.isNotEmpty) {
+      query = query.where('district', isEqualTo: _searchQuery);
+    }
+    if (_selectedCategory != null) {
+      query = query.where('category', isEqualTo: _selectedCategory);
+    }
+    return query.snapshots();
+  }
 }
+

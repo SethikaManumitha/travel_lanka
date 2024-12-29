@@ -9,11 +9,9 @@ class CustomDrawer extends StatelessWidget {
   const CustomDrawer({Key? key}) : super(key: key);
 
   Future<void> logout(BuildContext context) async {
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("You have logged out.")),
     );
-
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -28,18 +26,29 @@ class CustomDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.red,
+          // User Profile Section with Circular Avatar
+          const UserAccountsDrawerHeader(
+            accountName:  Text(
+              'User Name',
+              style: TextStyle(fontSize: 18, color: Colors.white),
             ),
-            child: Text(
-              'Travel Lanka',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+            accountEmail:  Text(
+              'user@example.com',
+              style: TextStyle(fontSize: 14, color: Colors.white70),
+            ),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage(
+
+                'https://placehold.co/600x400',
               ),
+              radius: 30,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.red,  // Matching the DrawerHeader color
             ),
           ),
+
+          // Other ListTile Items
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),

@@ -26,6 +26,7 @@ class PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Image: $image');
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
@@ -66,7 +67,7 @@ class PlaceCard extends StatelessWidget {
               color: Colors.grey[300],
               child: const Icon(
                 Icons.image,
-                size: 50,
+                size: 500,
                 color: Colors.grey,
               ),
             ),

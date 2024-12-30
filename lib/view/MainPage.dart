@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel_lanka/view/HomePage.dart';
-import 'package:travel_lanka/view/ViewTripPage.dart';
+import 'package:travel_lanka/view/ViewTripsPage.dart';
 import 'package:travel_lanka/view/ViewPlacePage.dart';
 import 'package:travel_lanka/widget/CustomDrawer.dart';
 
@@ -19,7 +19,6 @@ class _MainPageState extends State<MainPage> {
 
   final List<Widget> _pages = [];
 
-  // Function to navigate and update the index
   void _onNavigate(int index) {
     setState(() {
       _currentIndex = index;
@@ -33,7 +32,7 @@ class _MainPageState extends State<MainPage> {
     _pages.addAll([
       const HomePage(),
       const FavoritesScreen(),
-      ViewTripPage(email: widget.email),
+      ViewTripsPage(email: widget.email),
       ViewPlacePage(email: widget.email),
     ]);
   }

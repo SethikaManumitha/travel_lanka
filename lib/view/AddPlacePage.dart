@@ -28,7 +28,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
     if (widget.initialData != null) {
       final data = widget.initialData!;
       placeController.text = data['place'];
-      descriptionController.text = data['description'];
+      descriptionController.text = data['descript'];
       imageController.text = data['image'];
       locationController.text = data['location'];
       selectedCategory = data['category'];

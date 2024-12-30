@@ -22,9 +22,7 @@ class ViewTripsPage extends StatelessWidget {
             const SizedBox(height: 20),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: tripsCollection
-                    .where('user', isEqualTo: email)
-                    .snapshots(),
+                stream: tripsCollection.where('user', isEqualTo: email).snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -39,7 +37,8 @@ class ViewTripsPage extends StatelessWidget {
                   return ListView.builder(
                     itemCount: trips.length,
                     itemBuilder: (context, index) {
-                      var tripData = trips[index].data() as Map<String, dynamic>;
+                      var tripDoc = trips[index];
+                      var tripData = tripDoc.data() as Map<String, dynamic>;
 
                       String tripName = tripData['name'] ?? 'Unknown place';
                       String destination = tripData['destination'] ?? 'No destination';
@@ -51,35 +50,49 @@ class ViewTripsPage extends StatelessWidget {
                       String formattedStartDate = DateFormat('yyyy-MM-dd').format(startDate);
                       String formattedEndDate = DateFormat('yyyy-MM-dd').format(endDate);
 
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ViewTripPage(
-                                email: email,
-                                tripName: tripName,
-                                destination: destination,
-                                startDate: startDate,
-                                endDate: endDate,
-                                category: 'Trip',
-                                places: places,
-                              ),
-                            ),
+                      return Dismissible(
+                        key: ValueKey(tripDoc.id),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          color: Colors.red,
+                          child: const Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onDismissed: (direction) async {
+                          await tripsCollection.doc(tripDoc.id).delete();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('$tripName deleted.')),
                           );
                         },
-                        child: TripCard(
-                          tripName: tripName,
-                          destination: destination,
-                          startDate: formattedStartDate,
-                          endDate: formattedEndDate,
-                          category: 'Trip',
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewTripPage(
+                                  email: email,
+                                  tripName: tripName,
+                                  destination: destination,
+                                  startDate: startDate,
+                                  endDate: endDate,
+                                  category: 'Trip',
+                                  places: places,
+                                ),
+                              ),
+                            );
+                          },
+                          child: TripCard(
+                            tripName: tripName,
+                            destination: destination,
+                            startDate: formattedStartDate,
+                            endDate: formattedEndDate,
+                            category: 'Trip',
+                          ),
                         ),
                       );
                     },
                   );
-
-
                 },
               ),
             ),

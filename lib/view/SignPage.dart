@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_lanka/view/MainPage.dart';
 import 'package:travel_lanka/view/SignUpPage.dart';
 import 'package:travel_lanka/view/SignInPage.dart';
 class SignPage extends StatefulWidget {
@@ -37,8 +38,7 @@ class _SignPageState extends State<SignPage> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-
+            const SizedBox(height: 5),
             Container(
               width: 250,
               child: ElevatedButton(
@@ -58,6 +58,30 @@ class _SignPageState extends State<SignPage> {
                   'Sign Up',
                   style: TextStyle(fontSize: 16),
                 ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Container(
+              width: 250,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[600],
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+                onPressed: () {
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainPage(email: "",username: "Guest",)),
+                  );
+                },
+                child: const Text(
+                  'Continue as Guest',
+                  style: TextStyle(fontSize: 16,color: Colors.white),
+                ),
+
               ),
             ),
           ],

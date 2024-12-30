@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_lanka/view/CurrencyConverterPage.dart';
 import 'package:travel_lanka/view/AboutPage.dart';
-import 'package:travel_lanka/view/SignInPage.dart';
+import 'package:travel_lanka/view/SignPage.dart';
 
 class CustomDrawer extends StatelessWidget {
   final Function(int) onNavigate;
@@ -23,7 +23,7 @@ class CustomDrawer extends StatelessWidget {
     );
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const SignInPage()),
+      MaterialPageRoute(builder: (context) => const SignPage()),
     );
   }
 

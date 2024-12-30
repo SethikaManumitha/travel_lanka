@@ -5,8 +5,8 @@ import 'package:travel_lanka/view/ViewPlacePage.dart';
 import 'package:travel_lanka/widget/CustomDrawer.dart';
 
 class MainPage extends StatefulWidget {
-  final String email; // Added parameter for email
-  final String username; // Added parameter for username
+  final String email;
+  final String username;
 
   const MainPage({Key? key, required this.email, required this.username}) : super(key: key);
 
@@ -20,6 +20,13 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [];
 
   void _onNavigate(int index) {
+    // Prevent navigation to Favorites, Trip, and Place when username is Guest
+    if (widget.username == 'Guest' && index != 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Feature unavailable for Guest user")),
+      );
+      return;
+    }
     setState(() {
       _currentIndex = index;
     });
@@ -62,25 +69,25 @@ class _MainPageState extends State<MainPage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onNavigate,
-        items: const [
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: 'Favorites',
+            label: widget.username == 'Guest' ? 'Disabled' : 'Favorites',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
-            label: 'Trip',
+            label: widget.username == 'Guest' ? 'Disabled' : 'Trip',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.location_on_sharp),
-            label: 'Place',
+            label: widget.username == 'Guest' ? 'Disabled' : 'Place',
           ),
         ],
-        selectedItemColor: Colors.red,
+        selectedItemColor: widget.username == 'Guest' ? Colors.grey : Colors.red,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,

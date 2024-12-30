@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AddPlacePage extends StatefulWidget {
   final String? docId;
   final Map<String, dynamic>? initialData;
-  final String email;  // Add email parameter
+  final String email;
 
   AddPlacePage({this.docId, this.initialData, required this.email});
 
@@ -46,7 +46,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
           'category': selectedCategory,
           'location': locationController.text.trim(),
           'district': selectedDistrict,
-          'user': widget.email, // Saving the email as part of the place entry
+          'user': widget.email,
         });
       } else {
         await places.doc(widget.docId).update({

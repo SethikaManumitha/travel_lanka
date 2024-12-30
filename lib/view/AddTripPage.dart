@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_lanka/widget/PlaceList.dart';
 
 class AddTripPage extends StatefulWidget {
-  const AddTripPage({Key? key}) : super(key: key);
+  final String email;
+
+  const AddTripPage({Key? key,required this.email}) : super(key: key);
 
   @override
   _AddTripPageState createState() => _AddTripPageState();
@@ -12,6 +14,7 @@ class AddTripPage extends StatefulWidget {
 
 class _AddTripPageState extends State<AddTripPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final List<String> placeList = [];
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   DateTime _startDate = DateTime.now();
@@ -19,6 +22,43 @@ class _AddTripPageState extends State<AddTripPage> {
   String? _selectedCategory;
   final DateFormat _dateFormat = DateFormat('EEE, dd MMM yyyy');
   String selectedDistrict = 'Colombo';
+
+  Future<void> _saveTrip() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (placeList.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please select at least one place')),
+        );
+        return;
+      }
+
+      try {
+        final String tripName = _nameController.text.trim();
+        final String userEmail = widget.email;
+
+        Map<String, dynamic> tripData = {
+          'destination': selectedDistrict,
+          'enddate': Timestamp.fromDate(_endDate),
+          'name': tripName,
+          'placeList': placeList,
+          'startdate': Timestamp.fromDate(_startDate),
+          'user': userEmail,
+        };
+
+        await _firestore.collection('trip').add(tripData);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Trip saved successfully!')),
+        );
+
+        Navigator.of(context).pop();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving trip: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +75,10 @@ class _AddTripPageState extends State<AddTripPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.save),
-            onPressed: () {
-              // Add your save logic here
-            },
+            onPressed: _saveTrip,
           ),
         ],
       ),
-
       body: Form(
         key: _formKey,
         child: Padding(
@@ -106,7 +143,7 @@ class _AddTripPageState extends State<AddTripPage> {
                 }).toList(),
               ),
               const SizedBox(height: 16),
-              // Dropdown for selecting category
+
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
                 onChanged: (value) {
@@ -155,27 +192,41 @@ class _AddTripPageState extends State<AddTripPage> {
                           final description = doc['descript'];
                           final image = doc['image'];
                           final category = doc['category'];
-                          bool isAdded = false;
+                          final docId = doc.id;
+
+
+                          bool isAdded = placeList.contains(docId);
 
                           return PlaceList(
                             place: place,
                             description: description,
                             image: image,
                             category: category,
-                            rating: 4.5, // Update dynamically from data if needed
-                            isFavorite: false, // Update dynamically from data if needed
+                            rating: 4.5,
+                            isFavorite: false,
                             onFavoriteToggle: () {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text('Favorite toggled!')),
                               );
                             },
                             onAdd: () {
-                              isAdded = !isAdded;
+                              setState(() {
+                                if (isAdded) {
+                                  placeList.remove(docId);
+
+                                } else {
+                                  placeList.add(docId);
+
+                                }
+                                print(placeList);
+                                isAdded = !isAdded;
+                              });
                             },
-                            isAdded: isAdded,
+                            isAdded: isAdded, // Pass dynamic isAdded state
                           );
                         }).toList(),
                       );
+
                     },
                   ),
                 ),
@@ -229,3 +280,4 @@ class _AddTripPageState extends State<AddTripPage> {
     return query.snapshots();
   }
 }
+

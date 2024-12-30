@@ -33,8 +33,8 @@ class _MainPageState extends State<MainPage> {
     _pages.addAll([
       const HomePage(),
       const FavoritesScreen(),
-      const ViewTripPage(),
-      ViewPlacePage(email: widget.email), // Pass the email parameter here
+      ViewTripPage(email: widget.email),
+      ViewPlacePage(email: widget.email),
     ]);
   }
 

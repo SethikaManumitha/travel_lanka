@@ -8,8 +8,8 @@ class PlaceList extends StatefulWidget {
   final double rating;
   final bool isFavorite;
   final VoidCallback onFavoriteToggle;
-  final VoidCallback onAdd; // Add callback instead of edit and delete
-  final bool isAdded; // New flag to track if the place is added or not
+  final VoidCallback onAdd;
+  final bool isAdded;
 
   const PlaceList({
     Key? key,

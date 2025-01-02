@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel_lanka/view/MainPage.dart';
+import 'package:travel_lanka/controller/UserController.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -13,39 +12,7 @@ class _SignInPageState extends State<SignInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-  Future<void> signInUser(String email, String password) async {
-    try {
-      // Query the users collection for the provided email
-      var userQuery = await users.where('email', isEqualTo: email).get();
-
-      // Check if a user with the email exists
-      if (userQuery.docs.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No user found with this email')),
-        );
-        return;
-      }
-
-      // Check if the password matches the one stored for that email
-      var userData = userQuery.docs.first.data() as Map<String, dynamic>;
-      if (userData['password'] == password) {
-        // Navigate to the MainPage with email and password
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainPage(email: email, username: userData['username']),
-          ),
-        );
-      }
-
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
-      );
-    }
-  }
+  final UserController _userController = UserController();
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +39,7 @@ class _SignInPageState extends State<SignInPage> {
             // Password field
             TextField(
               controller: _passwordController,
-              obscureText: true, // Hide password text
+              obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
@@ -82,8 +49,8 @@ class _SignInPageState extends State<SignInPage> {
             // Sign In Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Set button color
-                minimumSize: const Size(double.infinity, 50), // Make the button wide
+                backgroundColor: Colors.red,
+                minimumSize: const Size(double.infinity, 50),
               ),
               onPressed: () {
                 // Get input values from the text controllers
@@ -98,8 +65,8 @@ class _SignInPageState extends State<SignInPage> {
                   return;
                 }
 
-                // Call the signInUser function to authenticate the user
-                signInUser(email, password);
+                // Call the signInUser function from the controller
+                _userController.signInUser(context, email, password);
               },
               child: const Text('Sign In', style: TextStyle(color: Colors.white)),
             ),

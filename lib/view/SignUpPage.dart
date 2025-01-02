@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel_lanka/view/SignPage.dart';
+import 'package:travel_lanka/controller/UserController.dart';
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -13,31 +12,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-  Future<void> addUser(String username, String email, String password) async {
-    try {
-      await users.add({
-        'username': username,
-        'email': email,
-        'password': password,
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sign Up successful!')),
-      );
-
-      
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const SignPage()),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to sign up: $e')),
-      );
-    }
-  }
+  final UserController _userController = UserController();
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +75,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   return;
                 }
 
-                // Call the addUser function to add user data to firestore
-                addUser(username, email, password);
+                // Call the signUpUser function from the controller
+                _userController.signUpUser(context, username, email, password);
               },
               child: const Text('Sign Up', style: TextStyle(color: Colors.white)),
             ),

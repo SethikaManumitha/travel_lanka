@@ -12,7 +12,6 @@ class CurrencyConverterPage extends StatelessWidget {
         backgroundColor: Colors.red,
           iconTheme: const IconThemeData(color: Colors.white)
       ),
-      //drawer: CustomDrawer(),
       body: const SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),

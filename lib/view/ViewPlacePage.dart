@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_lanka/widget/PlaceCard.dart';
 import 'package:travel_lanka/view/AddPlacePage.dart';
-
+import 'package:travel_lanka/model/PlaceModel.dart';
 class ViewPlacePage extends StatefulWidget {
   final String email;
 
@@ -69,12 +69,12 @@ class _ViewPlacePageState extends State<ViewPlacePage> {
                             itemCount: data.length,
                             itemBuilder: (context, index) {
                               final doc = data[index];
-                              final place = doc['place'];
-                              final description = doc['descript'];
-                              final image = doc['image'];
-                              final category = doc['category'];
-                              final location = doc['location'];
-                              final district = doc['district'];
+                              final place = doc['place'] ?? '';
+                              final description = doc['descript'] ?? '';
+                              final image = doc['image'] ?? '';
+                              final category = doc['category'] ?? '';
+                              final location = doc['location'] ?? '';
+                              final district = doc['district'] ?? '';
 
                               return PlaceCard(
                                 place: place,
@@ -93,15 +93,17 @@ class _ViewPlacePageState extends State<ViewPlacePage> {
                                     MaterialPageRoute(
                                       builder: (context) => AddPlacePage(
                                         docId: doc.id,
-                                        initialData: {
-                                          'place': place,
-                                          'description': description,
-                                          'image': image,
-                                          'category': category,
-                                          'location': location,
-                                          'district': district,
-                                        },
-                                        email: widget.email
+                                        initialData: Place(
+                                          id: doc.id,
+                                          place: place,
+                                          description: description,
+                                          image: image,
+                                          category: category,
+                                          location: location,
+                                          district: district,
+                                          user: widget.email,
+                                        ),
+                                        email: widget.email,
                                       ),
                                     ),
                                   );
@@ -133,7 +135,7 @@ class _ViewPlacePageState extends State<ViewPlacePage> {
                 ),
                 child: const Text(
                   'Add a Place',
-                  style: TextStyle(fontSize: 18, color: Colors.white), // Button text color set to white
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ),

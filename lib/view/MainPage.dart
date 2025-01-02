@@ -20,7 +20,6 @@ class _MainPageState extends State<MainPage> {
   final List<Widget> _pages = [];
 
   void _onNavigate(int index) {
-    // Prevent navigation to Favorites, Trip, and Place when username is Guest
     if (widget.username == 'Guest' && index != 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Feature unavailable for Guest user")),
@@ -59,11 +58,11 @@ class _MainPageState extends State<MainPage> {
         onNavigate: _onNavigate,
         currentIndex: _currentIndex,
         userName: widget.username,
-        email: widget.email, // Pass the email to the CustomDrawer
+        email: widget.email,
       ),
       body: Column(
         children: [
-          Expanded(child: _pages[_currentIndex]), // Display the current page
+          Expanded(child: _pages[_currentIndex]),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

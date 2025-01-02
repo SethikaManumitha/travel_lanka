@@ -73,7 +73,7 @@ class _SignUpPageState extends State<SignUpPage> {
             // Password field
             TextField(
               controller: _passwordController,
-              obscureText: true, // Hide password text
+              obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
@@ -83,8 +83,8 @@ class _SignUpPageState extends State<SignUpPage> {
             // Sign Up Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red, // Set button color
-                minimumSize: const Size(double.infinity, 50), // Make the button wide
+                backgroundColor: Colors.red,
+                minimumSize: const Size(double.infinity, 50),
               ),
               onPressed: () {
                 // Get input values from the text controllers
@@ -100,7 +100,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   return;
                 }
 
-                // Call the addUser function to add user data to Firestore
+                // Call the addUser function to add user data to firestore
                 addUser(username, email, password);
               },
               child: const Text('Sign Up', style: TextStyle(color: Colors.white)),

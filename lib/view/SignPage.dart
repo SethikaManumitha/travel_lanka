@@ -71,7 +71,6 @@ class _SignPageState extends State<SignPage> {
                   ),
                 ),
                 onPressed: () {
-
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => MainPage(email: "",username: "Guest",)),

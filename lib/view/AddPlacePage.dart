@@ -38,6 +38,7 @@ class _AddPlacePageState extends State<AddPlacePage> {
     }
   }
 
+  // Save places in the database
   Future<void> savePlace() async {
     Place place = Place(
       id: widget.docId,

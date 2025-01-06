@@ -13,6 +13,7 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
   String _toCurrency = 'LKR';
   double _result = 0.0;
 
+  // Fixed exchange rates
   final Map<String, double> _exchangeRates = {
     'USD': 1.0,
     'LKR': 320.0,
@@ -20,6 +21,7 @@ class _CurrencyConverterState extends State<CurrencyConverter> {
     'GBP': 0.73,
   };
 
+  // Convert currency
   void _convertCurrency() {
     if (_amountController.text.isNotEmpty) {
       double amount = double.parse(_amountController.text);

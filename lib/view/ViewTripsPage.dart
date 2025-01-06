@@ -22,7 +22,8 @@ class ViewTripsPage extends StatelessWidget {
             const SizedBox(height: 20),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: tripsCollection.where('user', isEqualTo: email).snapshots(),
+                // Retrieve all the trips with given user email and key word "all"
+                stream: tripsCollection.where('user', whereIn: [email,'all']).snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
